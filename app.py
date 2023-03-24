@@ -3,7 +3,7 @@ import webbrowser
 from flask import Flask, flash, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = '/Users/leepham/assets'
+UPLOAD_FOLDER = 'assets'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4'}
 
 app = Flask(__name__)
