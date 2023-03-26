@@ -4,7 +4,7 @@ from flask import Flask, flash, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER = 'assets'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'heic'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -33,11 +33,12 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             url = f"{UPLOAD_FOLDER}/{filename}"
             print(url)
-            webbrowser.open_new(f"file://{url}")            
+            webbrowser.open_new(f"file://{os.getcwd()}/{url}")            
             return redirect(url_for('download_file', name=filename))
 
     html = '''
     <!doctype html>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload new File</title>
     <h1>Upload new File</h1>
     <form method=post enctype=multipart/form-data>
