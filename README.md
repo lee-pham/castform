@@ -4,7 +4,6 @@
 ## Initial setup
 ```
 pip install -r requirements.txt
-mkdir assets
 ```
 
 ## Usage
