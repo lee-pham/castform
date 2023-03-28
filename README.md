@@ -1,5 +1,8 @@
 # Castform
-![Sunny Form Castform](https://archives.bulbagarden.net/media/upload/a/a6/Pokedex_Image_Castform-Sunny_SM.png)
+![Sunny Form Castform](assets/normal.gif)
+![Sunny Form Castform](assets/sunny.gif)
+![Sunny Form Castform](assets/rainy.gif)
+![Sunny Form Castform](assets/snowy.gif)
 
 ## Initial setup
 ```
