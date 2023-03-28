@@ -9,9 +9,11 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'heic'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -33,7 +35,7 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             url = f"{UPLOAD_FOLDER}/{filename}"
             print(url)
-            webbrowser.open_new(f"file://{os.getcwd()}/{url}")            
+            webbrowser.open_new(f"file://{os.getcwd()}/{url}")
             return redirect(url_for('download_file', name=filename))
 
     html = '''
@@ -47,6 +49,7 @@ def upload_file():
     </form>
     '''
     return html
+
 
 @app.route('/uploads/<name>')
 def download_file(name):

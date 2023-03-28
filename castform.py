@@ -28,16 +28,16 @@ def forecast_to_castform_form(forecast: str) -> str:
     forecast = forecast.lower()
     if any(keyword in forecast for keyword in normal_list):
         return "normal"
-    
+
     elif any(keyword in forecast for keyword in sunny_list):
         return "sunny"
-    
+
     elif any(keyword in forecast for keyword in rainy_list):
         return "rainy"
 
     elif any(keyword in forecast for keyword in snowy_list):
         return "snowy"
-    
+
     return "normal"
 
 
