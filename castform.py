@@ -58,7 +58,7 @@ opts.add_experimental_option("excludeSwitches", ['enable-automation'])
 driver = webdriver.Chrome(options=opts)
 
 
-def open_castform_gif(castform):
+def open_castform_gif(castform: str) -> None:
     driver.get(f"file://{os.getcwd()}/assets/{castform}.gif")
     driver.fullscreen_window()
     elem = driver.find_element(By.TAG_NAME, "img")
@@ -68,6 +68,6 @@ def open_castform_gif(castform):
 
 
 while True:
-    open_castform_gif(castform = forecast_to_castform_form(
+    open_castform_gif(forecast_to_castform_form(
         get_weather_forecast(CITY_COORDINATES_DICT[CITY])))
-    time.sleep(10 * 60)
+    time.sleep(15 * 60)
