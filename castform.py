@@ -1,4 +1,10 @@
+import os
 import requests
+import time
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 
 CITY = "Round Rock, TX"
 CITY_COORDINATES_DICT = {
@@ -42,4 +48,26 @@ def forecast_to_castform_form(forecast: str) -> str:
 
 
 print(f"{CITY}: {get_weather_forecast(CITY_COORDINATES_DICT[CITY])}")
-print(forecast_to_castform_form(get_weather_forecast(CITY_COORDINATES_DICT[CITY])))
+castform = forecast_to_castform_form(get_weather_forecast(CITY_COORDINATES_DICT[CITY]))
+print(castform)
+
+
+opts = Options()
+opts.add_argument("--no-sandbox")
+opts.add_experimental_option("excludeSwitches", ['enable-automation'])
+driver = webdriver.Chrome(options=opts)
+
+
+def open_castform_gif(castform):
+    driver.get(f"file://{os.getcwd()}/assets/{castform}.gif")
+    driver.fullscreen_window()
+    elem = driver.find_element(By.TAG_NAME, "img")
+    print(elem)
+    driver.execute_script("arguments[0].style.removeProperty('background-color');", elem)
+    driver.execute_script("document.body.style.zoom='900%'")
+
+
+while True:
+    open_castform_gif(castform = forecast_to_castform_form(
+        get_weather_forecast(CITY_COORDINATES_DICT[CITY])))
+    time.sleep(10 * 60)
