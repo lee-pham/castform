@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
+
 CITY = "Round Rock, TX"
 CITY_COORDINATES_DICT = {
     "Round Rock, TX": "30.57208203598085,-97.6556805597923"
@@ -13,14 +14,19 @@ CITY_COORDINATES_DICT = {
 
 ENDPOINT = "https://api.weather.gov"
 
+city_endpoint_cache = {}
 
 def get_grid_endpoint_by_coordinates(coordinates: str) -> str:
     r = requests.get(f"{ENDPOINT}/points/{CITY_COORDINATES_DICT[CITY]}")
+    r.raise_for_status()
     return r.json()["properties"]["forecast"]
 
 
-def get_weather_forecast(city: str) -> str:
-    r = requests.get(get_grid_endpoint_by_coordinates(CITY_COORDINATES_DICT[CITY]))
+def get_weather_forecast_for_city(city: str) -> str:
+    if city not in city_endpoint_cache:
+        city_endpoint_cache[city] = get_grid_endpoint_by_coordinates(CITY_COORDINATES_DICT[city])
+    r = requests.get(city_endpoint_cache[city])
+    r.raise_for_status()
     t = r.json()
     short_forecast = t["properties"]["periods"][0]["shortForecast"]
     return short_forecast
@@ -47,8 +53,9 @@ def forecast_to_castform_form(forecast: str) -> str:
     return "normal"
 
 
-print(f"{CITY}: {get_weather_forecast(CITY_COORDINATES_DICT[CITY])}")
-castform = forecast_to_castform_form(get_weather_forecast(CITY_COORDINATES_DICT[CITY]))
+forecast = get_weather_forecast_for_city(CITY)
+print(f"{CITY}: {forecast}")
+castform = forecast_to_castform_form(forecast)
 print(castform)
 
 
@@ -69,5 +76,5 @@ def open_castform_gif(castform: str) -> None:
 
 while True:
     open_castform_gif(forecast_to_castform_form(
-        get_weather_forecast(CITY_COORDINATES_DICT[CITY])))
+        get_weather_forecast_for_city(CITY)))
     time.sleep(15 * 60)
