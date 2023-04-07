@@ -1,4 +1,5 @@
 import os
+import random
 import requests
 import time
 
@@ -77,4 +78,10 @@ def open_castform_gif(castform: str) -> None:
 while True:
     open_castform_gif(forecast_to_castform_form(
         get_weather_forecast_for_city(CITY)))
-    time.sleep(15 * 60)
+    elem = driver.find_element(By.TAG_NAME, "img")
+    t_end = time.time() + 60 * 20
+    while time.time() < t_end:
+        driver.execute_script("arguments[0].style.setProperty('transform', 'scaleX(-1)');", elem)
+        time.sleep(random.randint(2, 15))
+        driver.execute_script("arguments[0].style.setProperty('transform', 'scaleX(1)');", elem)
+        time.sleep(random.randint(2, 15))
