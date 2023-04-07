@@ -67,7 +67,7 @@ driver = webdriver.Chrome(options=opts)
 
 
 def open_castform_gif(castform: str) -> None:
-    driver.get(f"file://{os.getcwd()}/assets/{castform}.gif")
+    driver.get(f"file://{os.getcwd()}/assets/castform/{castform}.gif")
     driver.fullscreen_window()
     elem = driver.find_element(By.TAG_NAME, "img")
     print(elem)
