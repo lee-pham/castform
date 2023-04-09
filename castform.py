@@ -39,6 +39,7 @@ def forecast_to_castform_form(forecast: str) -> str:
     rainy_list = ["rain", "shower", "storm"]
     snowy_list = ["snow", "ice"]
     forecast = forecast.lower()
+    print(forecast)
     if any(keyword in forecast for keyword in normal_list):
         return "normal"
 
@@ -67,6 +68,7 @@ driver = webdriver.Chrome(options=opts)
 
 
 def open_castform_gif(castform: str) -> None:
+    print(castform)
     driver.get(f"file://{os.getcwd()}/assets/castform/{castform}.gif")
     driver.fullscreen_window()
     elem = driver.find_element(By.TAG_NAME, "img")
@@ -79,7 +81,7 @@ while True:
     open_castform_gif(forecast_to_castform_form(
         get_weather_forecast_for_city(CITY)))
     elem = driver.find_element(By.TAG_NAME, "img")
-    t_end = time.time() + 60 * 20
+    t_end = time.time() + 60 * 30
     while time.time() < t_end:
         driver.execute_script("arguments[0].style.setProperty('transform', 'scaleX(-1)');", elem)
         time.sleep(random.randint(2, 15))
