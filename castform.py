@@ -1,3 +1,4 @@
+import datetime
 import os
 import random
 import requests
@@ -55,6 +56,73 @@ def forecast_to_castform_form(forecast: str) -> str:
     return "normal"
 
 
+
+night = [11 + 12,
+         0,
+         1,
+         2,
+         3,
+         4,
+         5]
+twilight = [6,
+            7,
+            8,
+            9,
+            7 + 12,
+            8 + 12,
+            9 + 12,
+            10 + 12]
+day = [10,
+       11,
+       12,
+       1 + 12,
+       2 + 12,
+       3 + 12,
+       4 + 12,
+       5 + 12,
+       6 + 12]
+
+
+def forecast_to_eeveelution(forecast: str) -> str:
+    eevee_list = ["cloudy"]
+    espeon_list = ["sunny"]
+    vaporeon_list = ["rain", "shower"]
+    jolten_list = ["storm"]
+    glaceon_list = ["snow", "ice"]
+    leafeon_list = ["windy"]
+    forecast = forecast.lower()
+    print(forecast)
+    eeveelution = "eevee"
+    if any(keyword in forecast for keyword in eevee_list):
+        eeveelution = "eevee"
+
+    elif any(keyword in forecast for keyword in espeon_list):
+        eeveelution = "espeon"
+
+    elif any(keyword in forecast for keyword in vaporeon_list):
+        eeveelution = "vaporeon"
+
+    elif any(keyword in forecast for keyword in glaceon_list):
+        eeveelution = "glaceon"
+    
+    elif any(keyword in forecast for keyword in jolten_list):
+        eeveelution = "jolteon"
+    
+    elif any(keyword in forecast for keyword in leafeon_list):
+        eeveelution = "leafeon"
+
+    current_hour = datetime.datetime.now().hour
+    print(current_hour)
+    if eeveelution != "eevee":
+        return eeveelution
+    elif current_hour in day:
+        return "espeon"
+    elif current_hour in night:
+        return "umbreon"
+    
+    return eeveelution
+    
+
 forecast = get_weather_forecast_for_city(CITY)
 print(f"{CITY}: {forecast}")
 castform = forecast_to_castform_form(forecast)
@@ -67,9 +135,9 @@ opts.add_experimental_option("excludeSwitches", ['enable-automation'])
 driver = webdriver.Chrome(options=opts)
 
 
-def open_castform_gif(castform: str) -> None:
+def open_gif(castform: str, type: str) -> None:
     print(castform)
-    driver.get(f"file://{os.getcwd()}/assets/castform/{castform}.gif")
+    driver.get(f"file://{os.getcwd()}/assets/{type}/{castform}.gif")
     driver.fullscreen_window()
     elem = driver.find_element(By.TAG_NAME, "img")
     print(elem)
@@ -78,8 +146,14 @@ def open_castform_gif(castform: str) -> None:
 
 
 while True:
-    open_castform_gif(forecast_to_castform_form(
-        get_weather_forecast_for_city(CITY)))
+    # open_gif(
+    #     forecast_to_castform_form(get_weather_forecast_for_city(CITY)),
+    #     "castform"
+    #     )
+    open_gif(
+        forecast_to_eeveelution(get_weather_forecast_for_city(CITY)),
+        "eevees"
+        )
     elem = driver.find_element(By.TAG_NAME, "img")
     t_end = time.time() + 60 * 30
     while time.time() < t_end:
