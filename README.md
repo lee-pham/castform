@@ -1,15 +1,16 @@
 # Castform
-![Sunny Form Castform](assets/normal.gif)
-![Sunny Form Castform](assets/sunny.gif)
-![Sunny Form Castform](assets/rainy.gif)
-![Sunny Form Castform](assets/snowy.gif)
+![Sunny Form Castform](assets/castform/normal.gif)
+![Sunny Form Castform](assets/castform/sunny.gif)
+![Sunny Form Castform](assets/castform/rainy.gif)
+![Sunny Form Castform](assets/castform/snowy.gif)
 
 ## Initial setup
 ```
 pip install -r requirements.txt
+sudo apt install chromium-browser
 ```
 
 ## Usage
 ```
-flask run --host=0.0.0.0 --port=80
+python castform.py
 ```
