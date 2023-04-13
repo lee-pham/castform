@@ -18,6 +18,7 @@ ENDPOINT = "https://api.weather.gov"
 
 city_endpoint_cache = {}
 
+
 def get_grid_endpoint_by_coordinates(coordinates: str) -> str:
     r = requests.get(f"{ENDPOINT}/points/{CITY_COORDINATES_DICT[CITY]}")
     r.raise_for_status()
@@ -33,6 +34,7 @@ def get_weather_forecast_for_city(city: str) -> str:
             r = requests.get(city_endpoint_cache[city])
             r.raise_for_status()
             t = r.json()
+            print(t)
             short_forecast = t["properties"]["periods"][0]["shortForecast"]
             return short_forecast
         except Exception as e:
@@ -41,7 +43,7 @@ def get_weather_forecast_for_city(city: str) -> str:
             print(f"Retrying in {minutes_to_wait} minutes")
             time.sleep(minutes_to_wait * 60)
 
-        print("retry limit reached. don't know how you got this far chief")
+    return "retry limit reached. don't know how you got this far chief"
 
 
 def forecast_to_castform_form(forecast: str) -> str:
@@ -75,18 +77,20 @@ night = [
     2,
     3,
     4,
-    5
-    ]
-twilight = [
+    5,
     6,
-    7,
+    7
+]
+
+twilight = [
     8,
     9,
     10,
     6 + 12,
     7 + 12,
     8 + 12
-    ]
+]
+
 day = [
     11,
     12,
@@ -95,7 +99,23 @@ day = [
     3 + 12,
     4 + 12,
     5 + 12
-    ]
+]
+
+
+def is_golden_hour(sunrise_time, sunset_time) -> bool:
+    current_time = datetime.datetime.now().time()
+    print(current_time, sunrise_time, sunset_time)
+    sunrise_golden_hour_end = datetime.time(sunrise_time.hour + 1, sunrise_time.minute)
+    sunrise_golden_hour = sunrise_time <= current_time <= sunrise_golden_hour_end
+    
+    sunset_golden_hour_begin = datetime.time(sunset_time.hour - 1, sunset_time.minute)
+    sunset_golden_hour = sunset_golden_hour_begin <= current_time <= sunset_time
+
+    golden_hour = sunrise_golden_hour or sunset_golden_hour
+    if golden_hour:
+        print("~GOLDEN HOUR~")
+    
+    return golden_hour
 
 
 def forecast_to_eeveelution(forecast: str) -> str:
@@ -108,10 +128,7 @@ def forecast_to_eeveelution(forecast: str) -> str:
     forecast = forecast.lower()
     print(forecast)
     eeveelution = "eevee"
-    if any(keyword in forecast for keyword in eevee_list):
-        eeveelution = "eevee"
-
-    elif any(keyword in forecast for keyword in jolten_list):
+    if any(keyword in forecast for keyword in jolten_list):
         eeveelution = "jolteon"
 
     elif any(keyword in forecast for keyword in vaporeon_list):
@@ -123,8 +140,8 @@ def forecast_to_eeveelution(forecast: str) -> str:
     elif any(keyword in forecast for keyword in leafeon_list):
         eeveelution = "leafeon"
 
-    elif any(keyword in forecast for keyword in espeon_list):
-        eeveelution = "espeon"
+    if is_golden_hour(datetime.time(hour=7, minute=8), datetime.time(hour=7+12, minute=55)):
+        return "sylveon"
 
     current_hour = datetime.datetime.now().hour
     print(current_hour)
@@ -134,9 +151,9 @@ def forecast_to_eeveelution(forecast: str) -> str:
         return "espeon"
     elif current_hour in night:
         return "umbreon"
-    
+
     return eeveelution
-    
+
 
 opts = Options()
 opts.add_argument("--no-sandbox")
@@ -166,7 +183,7 @@ while True:
         "eevees"
         )
     elem = driver.find_element(By.TAG_NAME, "img")
-    t_end = time.time() + 60 * 20
+    t_end = time.time() + 60 * 10
     while time.time() < t_end:
         driver.execute_script("arguments[0].style.setProperty('transform', 'scaleX(-1)');", elem)
         time.sleep(random.randint(2, 15))
