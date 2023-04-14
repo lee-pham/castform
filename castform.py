@@ -55,23 +55,23 @@ class NationalWeatherServiceAPICaller:
         raise Exception
 
 
-def forecast_to_castform_form(forecast: str) -> str:
+def forecast_to_castform_form(forecast: Forecast) -> str:
     normal_list = ["cloudy"]
     sunny_list = ["sunny"]
     rainy_list = ["rain", "shower", "storm"]
     snowy_list = ["snow", "ice"]
-    forecast = forecast.lower()
-    print(forecast)
-    if any(keyword in forecast for keyword in normal_list):
+    short_forecast = forecast.short_forecast.lower()
+    print(short_forecast)
+    if any(keyword in short_forecast for keyword in normal_list):
         return "normal"
 
-    elif any(keyword in forecast for keyword in rainy_list):
+    elif any(keyword in short_forecast for keyword in rainy_list):
         return "rainy"
 
-    elif any(keyword in forecast for keyword in snowy_list):
+    elif any(keyword in short_forecast for keyword in snowy_list):
         return "snowy"
 
-    elif any(keyword in forecast for keyword in sunny_list):
+    elif any(keyword in short_forecast for keyword in sunny_list):
         return "sunny"
 
     return "normal"
