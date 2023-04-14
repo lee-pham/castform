@@ -14,11 +14,14 @@ CITY_COORDINATES_DICT = {
 }
 
 
-# class Forecast:
-#     def __init__(self, short_forecast: str, temperature: int, wind_speed: int):
-#         self.short_forecast = short_forecast
-#         self.temperature = temperature
-#         self.wind_speed = wind_speed
+class Forecast:
+    def __init__(self, short_forecast: str, temperature: int, wind_speed: int):
+        self.short_forecast = short_forecast
+        self.temperature = temperature
+        self.wind_speed = wind_speed
+    
+    def to_string(self):
+        print(self.short_forecast, self.temperature, self.wind_speed)
 
 
 class NationalWeatherServiceAPICaller:
@@ -30,7 +33,7 @@ class NationalWeatherServiceAPICaller:
         r.raise_for_status()
         return r.json()["properties"]["forecast"]
 
-    def get_forecast(self, city: str) -> str:
+    def get_forecast(self, city: str) -> Forecast:    
         if city not in self.city_endpoint_cache:
             self.city_endpoint_cache[city] = self.get_grid_endpoint_by_coordinates(
                 CITY_COORDINATES_DICT[city])
@@ -40,16 +43,16 @@ class NationalWeatherServiceAPICaller:
                 r = requests.get(self.city_endpoint_cache[city])
                 r.raise_for_status()
                 t = r.json()
-                print(t)
                 short_forecast = t["properties"]["periods"][0]["shortForecast"]
-                return short_forecast
+                temperature = t["properties"]["periods"][0]["temperature"]
+                wind_speed = int(t["properties"]["periods"][0]["windSpeed"].split(" ")[0])
+                return Forecast(short_forecast, temperature, wind_speed)
             except Exception as e:
                 print(e)
                 minutes_to_wait = 20
                 print(f"Retrying in {minutes_to_wait} minutes")
                 time.sleep(minutes_to_wait * 60)
-
-        return "retry limit reached. don't know how you got this far chief"
+        raise Exception
 
 
 def forecast_to_castform_form(forecast: str) -> str:
@@ -108,26 +111,27 @@ def is_golden_hour(sunrise_time, sunset_time) -> bool:
     return golden_hour
 
 
-def forecast_to_eeveelution(forecast: str) -> str:
+def forecast_to_eeveelution(forecast: Forecast) -> str:
+    print(forecast.to_string())
     eevee_list = ["cloudy"]
     espeon_list = ["sunny"]
     vaporeon_list = ["rain", "shower"]
     jolten_list = ["storm"]
     glaceon_list = ["snow", "ice"]
     leafeon_list = ["windy"]
-    forecast = forecast.lower()
-    print(forecast)
+    short_forecast = forecast.short_forecast.lower()
+    print(short_forecast)
     eeveelution = "eevee"
-    if any(keyword in forecast for keyword in jolten_list):
+    if any(keyword in short_forecast for keyword in jolten_list):
         eeveelution = "jolteon"
 
-    elif any(keyword in forecast for keyword in vaporeon_list):
+    elif any(keyword in short_forecast for keyword in vaporeon_list):
         eeveelution = "vaporeon"
 
-    elif any(keyword in forecast for keyword in glaceon_list):
+    elif any(keyword in short_forecast for keyword in glaceon_list):
         eeveelution = "glaceon"
 
-    elif any(keyword in forecast for keyword in leafeon_list):
+    elif any(keyword in short_forecast for keyword in leafeon_list):
         eeveelution = "leafeon"
 
     if is_golden_hour(datetime.time(hour=7, minute=8), datetime.time(hour=7 + 12, minute=55)):
@@ -137,6 +141,12 @@ def forecast_to_eeveelution(forecast: str) -> str:
     print(current_hour)
     if eeveelution != "eevee":
         return eeveelution
+    elif forecast.temperature >= 80:
+        return "flareon"
+    elif forecast.temperature < 50:
+        return "glaceon"
+    elif forecast.wind_speed >= 15:
+        return "leafeon"
     elif current_hour in day:
         return "espeon"
     elif current_hour in night:
