@@ -49,7 +49,7 @@ class NationalWeatherServiceAPICaller:
                 return Forecast(short_forecast, temperature, wind_speed)
             except Exception as e:
                 print(e)
-                minutes_to_wait = 20
+                minutes_to_wait = 60
                 print(f"Retrying in {minutes_to_wait} minutes")
                 time.sleep(minutes_to_wait * 60)
         raise Exception
